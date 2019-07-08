@@ -265,7 +265,9 @@
     <ClInclude Include="App.h" />
     <ClInclude Include="Common\DeviceResources.h" />
     <ClInclude Include="Content\arcball.h" />
+    <ClInclude Include="Content\DXUTcamera.h" />
     <ClInclude Include="Content\HvyInst.h" />
+    <ClInclude Include="Content\RAxis.h" />
     <ClInclude Include="RowndMain.h" />
     <ClInclude Include="Common\DirectXHelper.h" />
     <ClInclude Include="Common\StepTimer.h" />
@@ -278,7 +280,9 @@
     <ClCompile Include="App.cpp" />
     <ClCompile Include="Common\DeviceResources.cpp" />
     <ClCompile Include="Content\arcball.cpp" />
+    <ClCompile Include="Content\DXUTcamera.cpp" />
     <ClCompile Include="Content\HvyInst.cpp" />
+    <ClCompile Include="Content\RAxis.cpp" />
     <ClCompile Include="Content\TexCoSphere.cpp" />
     <ClCompile Include="RowndMain.cpp" />
     <ClCompile Include="Content\SampleFpsTextRenderer.cpp" />

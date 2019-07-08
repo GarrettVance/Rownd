@@ -59,7 +59,15 @@ Sample3DSceneRenderer::Sample3DSceneRenderer(const std::shared_ptr<DX::DeviceRes
     e_mouse = std::make_unique<DirectX::Mouse>(); 
     e_mouse->SetWindow(Windows::UI::Core::CoreWindow::GetForCurrentThread());
 
+
+
+
+
     e_ptrHvyInstancer = new HvyDXBase::HvyInst(deviceResources, m_constantBuffer); 
+
+    e_RotationAxis = new HvyDXBase::RAxis(deviceResources, m_constantBuffer); 
+
+
 
 
     ArcBall_Init();
@@ -425,6 +433,9 @@ void Sample3DSceneRenderer::Rotate(float radians)
 
     // modelRotationMatrix = XMMatrixTranspose(modelRotationMatrix); 
 
+    //      
+    //  Compute the axis of rotation, if there is one:
+    //      
 
     float u1 = shoeRotationMatrix[2][1] - shoeRotationMatrix[1][2];
 
@@ -432,11 +443,11 @@ void Sample3DSceneRenderer::Rotate(float radians)
 
     float u3 = shoeRotationMatrix[1][0] - shoeRotationMatrix[0][1];
 
-    XMVECTOR uu_axis = XMVectorSet(u1, u2, u3, 0.0); 
+    uu_RotationAxis = XMVectorSet(u1, u2, u3, 0.0); 
 
-    if (XMVector3Equal(uu_axis, XMVectorZero()))
+    if (XMVector3Equal(uu_RotationAxis, XMVectorZero()))
     {
-        uu_axis = XMVectorSet(0.05 + u1, 0.05 + u2, 0.05 + u3, 0.0); 
+        uu_RotationAxis = XMVectorSet(0.05 + u1, 0.05 + u2, 0.05 + u3, 0.0); 
     }
 
 
@@ -445,9 +456,15 @@ void Sample3DSceneRenderer::Rotate(float radians)
         &m_constantBufferData.model,
         XMMatrixTranspose(
             // modelRotationMatrix * XMMatrixScaling(sca, sca, sca)
-            XMMatrixRotationAxis(uu_axis, radians) * XMMatrixScaling(sca, sca, sca)
+            XMMatrixRotationAxis(uu_RotationAxis, radians) * XMMatrixScaling(sca, sca, sca)
         )
     );
+
+
+
+
+  
+    this->e_RotationAxis->UpdateConnector(uu_RotationAxis);
 
 
 }
@@ -483,6 +500,9 @@ void Sample3DSceneRenderer::Render()
 
 
     e_ptrHvyInstancer->TriflecheRender();
+
+
+    e_RotationAxis->TriflecheRender();
 }
 
 
@@ -706,3 +726,17 @@ void Sample3DSceneRenderer::ReleaseDeviceDependentResources()
 	Sphere1_vertexBuffer.Reset();
 	Sphere1_indexBuffer.Reset();
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -8,6 +8,7 @@
 
 #include "HvyInst.h"
 
+#include "RAxis.h"
 
 
 
@@ -128,7 +129,18 @@ namespace Rownd
 		ModelViewProjectionConstantBuffer	                    m_constantBufferData;
 
 
+
+
+
+
+
         HvyDXBase::HvyInst *                                    e_ptrHvyInstancer;
+
+        HvyDXBase::RAxis*                                       e_RotationAxis;
+
+        DirectX::XMVECTOR                                       uu_RotationAxis;
+
+
 
 
 

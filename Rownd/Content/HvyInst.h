@@ -15,65 +15,6 @@ namespace HvyDXBase
 
 
 
-    struct VHG_Instance
-    {
-        DirectX::XMFLOAT3       inst_pos;
-        DirectX::XMFLOAT3       inst_attributes;
-    };
-
-
-
-
-
-    struct VHG_Vertex_PosTex
-    {
-        DirectX::XMFLOAT3       e_pos;
-        DirectX::XMFLOAT2       e_texco;
-    };
-
-
-
-
-
-
-
-    template <class T>
-    class VHG_Scale
-    {
-    public:
-        VHG_Scale(float p_scale_factor) : e_scale_factor(p_scale_factor) {}
-
-
-        void posApply(std::vector<T> & p_vectpostex)
-        {
-            for_each(
-                p_vectpostex.begin(),
-                p_vectpostex.end(),
-
-                //      Important : pass p_postex BY REFERENCE 
-                //      otherwise won't be able to alter it!!! 
-
-                [this](T & p_postex) {
-                    p_postex.e_pos.x *= this->e_scale_factor;
-                    p_postex.e_pos.y *= this->e_scale_factor;
-                    p_postex.e_pos.z *= this->e_scale_factor;
-                }
-            );
-        }
-
-    private:
-        float e_scale_factor;
-    };
-
-
-
-
-
-
-
-
-
-
 	class HvyInst
 	{
 	public:

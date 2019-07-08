@@ -73,7 +73,13 @@
     <ClCompile Include="Content\TexCoSphere.cpp">
       <Filter>Content</Filter>
     </ClCompile>
+    <ClCompile Include="Content\DXUTcamera.cpp">
+      <Filter>Content</Filter>
+    </ClCompile>
     <ClCompile Include="Content\arcball.cpp">
+      <Filter>Content</Filter>
+    </ClCompile>
+    <ClCompile Include="Content\RAxis.cpp">
       <Filter>Content</Filter>
     </ClCompile>
   </ItemGroup>
@@ -84,7 +90,13 @@
     <ClInclude Include="Content\HvyInst.h">
       <Filter>Content</Filter>
     </ClInclude>
+    <ClInclude Include="Content\DXUTcamera.h">
+      <Filter>Content</Filter>
+    </ClInclude>
     <ClInclude Include="Content\arcball.h">
+      <Filter>Content</Filter>
+    </ClInclude>
+    <ClInclude Include="Content\RAxis.h">
       <Filter>Content</Filter>
     </ClInclude>
   </ItemGroup>
