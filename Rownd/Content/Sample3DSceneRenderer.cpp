@@ -3,6 +3,10 @@
 
 #include "..\Common\DirectXHelper.h"
 
+#include "arcball.h"
+
+
+
 using namespace Rownd;
 
 using namespace DirectX;
@@ -49,19 +53,27 @@ Sample3DSceneRenderer::Sample3DSceneRenderer(const std::shared_ptr<DX::DeviceRes
 	CreateDeviceDependentResources();
 	CreateWindowSizeDependentResources();
 
-
-
     e_keyboard = std::make_unique<DirectX::Keyboard>(); 
     e_keyboard->SetWindow(Windows::UI::Core::CoreWindow::GetForCurrentThread());
 
     e_mouse = std::make_unique<DirectX::Mouse>(); 
     e_mouse->SetWindow(Windows::UI::Core::CoreWindow::GetForCurrentThread());
 
-
-
-
-
     e_ptrHvyInstancer = new HvyDXBase::HvyInst(deviceResources, m_constantBuffer); 
+
+
+    ArcBall_Init();
+
+    HVect shoeCenterLogical = { 0.0f, 0.0f, 0.0f, 1.0f };
+
+    double shoeRadiusLogical = 1.f;  //  range 0.25 to 1.25 ?
+
+    ArcBall_Place(shoeCenterLogical, shoeRadiusLogical);
+
+    ArcBall_UseSet(NoAxes); 
+
+
+
 
 }
 
@@ -184,6 +196,116 @@ void Sample3DSceneRenderer::CreateWindowSizeDependentResources()
 
 
 
+D2D1_POINT_2F Sample3DSceneRenderer::g_getCentroidPhys()
+{
+
+    Windows::Foundation::Size   renderTargetPixels = m_deviceResources->GetOutputSize();
+
+    float halfWidthRT = renderTargetPixels.Width / 2.f;
+
+    float halfHeightRT = renderTargetPixels.Height / 2.f;
+
+    D2D1_POINT_2F   centroid_2f = D2D1::Point2F(halfWidthRT, halfHeightRT);
+
+    return centroid_2f;
+}
+
+
+
+
+float Sample3DSceneRenderer::g_cdisk_phys_radius()
+{
+    //  Half-height of the RenderTarget is the optimal 
+    //  radius for the Poincare Disk (in Physical Coords aka pixels): 
+
+    Windows::Foundation::Size   renderTargetPixels = m_deviceResources->GetOutputSize();
+    return renderTargetPixels.Height / 2.0f;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+std::complex<double> Sample3DSceneRenderer::LogicalFromPhysical(std::complex<double> p_physical)
+{
+
+    double x_logical = (p_physical.real() - g_getCentroidPhys().x) / g_cdisk_phys_radius();
+
+    double y_logical = (g_getCentroidPhys().y - p_physical.imag()) / g_cdisk_phys_radius(); // signum!!!
+
+    return std::complex<double>(x_logical, y_logical);
+}
+
+
+
+
+
+
+
+
+void Sample3DSceneRenderer::gvMouseHandler()
+{
+    DirectX::Mouse::State    maus_state = e_mouse->GetState();
+
+    e_mouseTracker.Update(maus_state);
+
+    static bool released = true;
+
+
+
+
+    if (e_mouseTracker.leftButton == Mouse::ButtonStateTracker::RELEASED)
+    {
+        released = true;
+
+        ArcBall_EndDrag();
+    }
+
+
+    if (maus_state.leftButton == true)
+    {
+        if (released)
+        {
+            released = false;
+
+            ArcBall_BeginDrag();
+        }
+    }
+
+
+    //   Now regardless of whether or not any button was clicked,
+    //   the following code must update mouse position constantly!!!
+
+
+    std::complex<double> mouse_hover_physical = std::complex<double>(1.000 * maus_state.x, 1.000 * maus_state.y);
+
+    std::complex<double> mouse_hover_logical = LogicalFromPhysical(mouse_hover_physical);
+
+    float xNow = (float)mouse_hover_logical.real();
+
+    float yNow = (float)mouse_hover_logical.imag();
+
+
+    HVect   vNow = { xNow, yNow, 0.f, 0.f };
+
+    ArcBall_Mouse(vNow);  //  CRUCIAL; 
+
+    ArcBall_Update();
+
+
+}
 
 
 
@@ -193,6 +315,9 @@ void Sample3DSceneRenderer::CreateWindowSizeDependentResources()
 
 void Sample3DSceneRenderer::Update(DX::StepTimer const& timer)
 {
+
+    gvMouseHandler(); 
+
 
     DirectX::Keyboard::State           kb = e_keyboard->GetState();
 
@@ -271,18 +396,60 @@ void Sample3DSceneRenderer::Update(DX::StepTimer const& timer)
 
 void Sample3DSceneRenderer::Rotate(float radians)
 {
-    //  radians = 30.f * DirectX::XM_2PI / 360.f; //  Override to halt rotation: 
-
-
     float sca = 0.8f; // scaling factor xyz; 
+
+
+    HMatrix shoeRotationMatrix;
+
+    ArcBall_Value(shoeRotationMatrix);
+
+    DirectX::SimpleMath::Matrix modelRotationMatrix =
+    {
+        (float)shoeRotationMatrix[0][0],
+        (float)shoeRotationMatrix[0][1],
+        (float)shoeRotationMatrix[0][2],
+        (float)shoeRotationMatrix[0][3],
+        (float)shoeRotationMatrix[1][0],
+        (float)shoeRotationMatrix[1][1],
+        (float)shoeRotationMatrix[1][2],
+        (float)shoeRotationMatrix[1][3],
+        (float)shoeRotationMatrix[2][0],
+        (float)shoeRotationMatrix[2][1],
+        (float)shoeRotationMatrix[2][2],
+        (float)shoeRotationMatrix[2][3],
+        (float)shoeRotationMatrix[3][0],
+        (float)shoeRotationMatrix[3][1],
+        (float)shoeRotationMatrix[3][2],
+        (float)shoeRotationMatrix[3][3],
+    };
+
+    // modelRotationMatrix = XMMatrixTranspose(modelRotationMatrix); 
+
+
+    float u1 = shoeRotationMatrix[2][1] - shoeRotationMatrix[1][2];
+
+    float u2 = shoeRotationMatrix[0][2] - shoeRotationMatrix[2][0];
+
+    float u3 = shoeRotationMatrix[1][0] - shoeRotationMatrix[0][1];
+
+    XMVECTOR uu_axis = XMVectorSet(u1, u2, u3, 0.0); 
+
+    if (XMVector3Equal(uu_axis, XMVectorZero()))
+    {
+        uu_axis = XMVectorSet(0.05 + u1, 0.05 + u2, 0.05 + u3, 0.0); 
+    }
+
 
 
     XMStoreFloat4x4(
         &m_constantBufferData.model,
         XMMatrixTranspose(
-            XMMatrixRotationX(radians) * XMMatrixScaling(sca, sca, sca)
+            // modelRotationMatrix * XMMatrixScaling(sca, sca, sca)
+            XMMatrixRotationAxis(uu_axis, radians) * XMMatrixScaling(sca, sca, sca)
         )
     );
+
+
 }
 
 

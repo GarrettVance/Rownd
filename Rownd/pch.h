@@ -22,7 +22,7 @@
 #include <vector>
 
 
-
+#include <complex>
 
 
 #define GHV_OPTION_LOCAL_TEXTURE_COORDINATES    //  keep this defined. The switch for local/global is inside vertex shader.
@@ -48,6 +48,8 @@
 
 #include "Keyboard.h"
 #include "Mouse.h"
+
+#include "SimpleMath.h"
 
 
 #include "WICTextureLoader.h" 

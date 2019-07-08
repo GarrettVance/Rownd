@@ -264,6 +264,7 @@
   <ItemGroup>
     <ClInclude Include="App.h" />
     <ClInclude Include="Common\DeviceResources.h" />
+    <ClInclude Include="Content\arcball.h" />
     <ClInclude Include="Content\HvyInst.h" />
     <ClInclude Include="RowndMain.h" />
     <ClInclude Include="Common\DirectXHelper.h" />
@@ -276,6 +277,7 @@
   <ItemGroup>
     <ClCompile Include="App.cpp" />
     <ClCompile Include="Common\DeviceResources.cpp" />
+    <ClCompile Include="Content\arcball.cpp" />
     <ClCompile Include="Content\HvyInst.cpp" />
     <ClCompile Include="Content\TexCoSphere.cpp" />
     <ClCompile Include="RowndMain.cpp" />

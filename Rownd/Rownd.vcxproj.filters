@@ -73,12 +73,18 @@
     <ClCompile Include="Content\TexCoSphere.cpp">
       <Filter>Content</Filter>
     </ClCompile>
+    <ClCompile Include="Content\arcball.cpp">
+      <Filter>Content</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App.h" />
     <ClInclude Include="RowndMain.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Content\HvyInst.h">
+      <Filter>Content</Filter>
+    </ClInclude>
+    <ClInclude Include="Content\arcball.h">
       <Filter>Content</Filter>
     </ClInclude>
   </ItemGroup>

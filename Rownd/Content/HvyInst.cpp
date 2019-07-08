@@ -90,7 +90,7 @@ void HvyInst::LoxodromeBeta(std::vector<VHG_Instance>    *p_vect_Instances, doub
     //  but it causes the loxodrome to wind more rapidly for a pleasing aesthetic effect. 
     //      
 
-    double omega = 4.0; // artificial angular speed = 4.00;
+    double omega = 8.0; // artificial angular speed = 4.00;
 
 
 
@@ -469,14 +469,14 @@ void HvyInst::DefineTheProtoCube()
 
 
     //   
-    //     Choosing good size for VHG_Scale...
+    //     Choosing size for VHG_Scale...0.007f: 
     //   
     //          Using 0.01 is just a bit too much;
     //          Try  0.008f; 
 
 
 
-    HvyDXBase::VHG_Scale<VHG_Vertex_PosTex>   gv_scaleObj(0.007f);  // use 0.02f;
+    HvyDXBase::VHG_Scale<VHG_Vertex_PosTex>   gv_scaleObj(0.020f);  // use 0.007f;
 
     gv_scaleObj.posApply(ThePrototypeCube);
 

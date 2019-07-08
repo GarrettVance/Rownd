@@ -54,21 +54,6 @@ Rownd::VHG_Spherolux Sample3DSceneRenderer::ComputeTextureCoordinates(
 
 
 
-#if 3 == 4
-    float psi = -6.f * std::atanh(sin(pLambdaLongitude));  // experimental undo;
-
-    posn.x = pSCentre.x + eNml.x * (3.f * cos(pThetaColatitude) / std::cosh(psi)) * pSRadius;
-
-    posn.y = pSCentre.y - eNml.y * (sin(pThetaColatitude) / std::cosh(psi)) * pSRadius;
-
-    posn.z = pSCentre.z + eNml.z * (2.f * sinh(psi) / std::cosh(psi)) * pSRadius;
-#endif 
-
-
-
-
-
-
     XMFLOAT2 texGlobal = XMFLOAT2(0.f, 0.f); 
 
 
@@ -492,8 +477,17 @@ void Sample3DSceneRenderer::TexCoSphereCreateRasterizerState(void)
 
     rasterizer_description.MultisampleEnable = FALSE;
 
-    // rasterizer_description.FillMode = D3D11_FILL_WIREFRAME; 
-    rasterizer_description.FillMode = D3D11_FILL_SOLID;  //  SOLID;
+
+
+
+    rasterizer_description.FillMode = D3D11_FILL_WIREFRAME; 
+    //  undo rasterizer_description.FillMode = D3D11_FILL_SOLID;  //  SOLID;
+
+
+
+
+
+
     rasterizer_description.CullMode = D3D11_CULL_NONE;  //  Use CULL_NONE when BlendState makes sphere transparent;
 
     rasterizer_description.FrontCounterClockwise = true; // undo false;

@@ -104,6 +104,18 @@ namespace Rownd
 
 
 
+
+        D2D1_POINT_2F               g_getCentroidPhys();
+        float                       g_cdisk_phys_radius();
+        std::complex<double>        LogicalFromPhysical(std::complex<double> p_physical);
+
+
+
+
+        void                gvMouseHandler();
+
+
+
 		void Rotate(float radians);
 
 
